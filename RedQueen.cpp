@@ -1,10 +1,29 @@
 /*
-Now, here, you see, it takes all the running you can do, to keep in the same place. -Lewis Carrol. 
+ * This file is subject to the terms and conditions defined in
+ * file 'docs/licensing/license.txt', as well as 'docs/licensing/sndfile.txt'
+ * which is part of this source code package.
 
-THE RED QUEEN ALGORITHM. 
-AN APPROACH TO DYNAMIC TIME WARPING USING GENETIC PROGRAMMING
-KEVIN R. LAWRENCE
-FEBRUARY 2020
+ * Distributed under the Boost Software License, Version 1.0.
+ * See accompanying file 'docs/licensing/sndfile.txt LICENSE_1_0.txt
+ 
+ The                                                                                         
+      888 88e               888     e88 88e                                    
+      888 888D  ,e e,   e88 888    d888 888b  8888 8888  ,e e,   ,e e,  888 8e 
+      888 88"  d88 88b d888 888   C8888 8888D 8888 8888 d88 88b d88 88b 888 88b
+      888 b,   888   , Y888 888    Y888 888P  Y888 888P 888   , 888   , 888 888
+      888 88b,  "YeeP"  "88 888     "88 88"    "88 88"   "YeeP"  "YeeP" 888 888
+                                       b                                      
+                                       8b,               Algorithm
+                                                                
+    Now, here, you see, it takes all the running you can do, to keep in the same place. -Lewis Carrol. 
+
+
+*   THE RED QUEEN ALGORITHM. 
+*   AN APPROACH TO DYNAMIC TIME WARPING USING GENETIC PROGRAMMING
+*   KEVIN R. LAWRENCE
+*   Version 1.0
+*   Last updated: FEBRUARY 2020
+
 
 */
 #include <vector>
@@ -16,20 +35,9 @@ FEBRUARY 2020
 #include <math.h>
 #include <iomanip>
 #include <fstream>
+#include "Red_Queen.h"
 
 using namespace std;
-
-struct Generation
-{
-    int N; //Number of signal A frames
-    int M; //Number of signal B frames
-    vector<int> p1; //Parent 1's chromosomes
-    vector<int> p2; //Parent 2's chromosomes
-    double fitness_p1; //respective fitness scores.
-    double fitness_p2;
-};
-
-
 
 bool parthenogenesis(vector<int> &parent, int N, int M){ //"Virgin Birth"
     int tracker_n = 0; //Trackers to keep track of position of matrix (N,M)
@@ -57,10 +65,6 @@ double euclidian_distance(vector<double> a, vector<double> b){
         euc_sum.push_back(pow((b[i] - a[i]), 2)); //Distance formula, given by pythagoras
     }
     return sqrt(accumulate(euc_sum.begin(), euc_sum.end(), 0.0));
-}
-
-bool Sa(vector<vector<double> > &m, int degree){
-    
 }
 
 void proofread(Generation gen, vector<int> &c){
@@ -117,7 +121,7 @@ double fitness(vector<vector<double> > euclidian_matrix, vector<int> c){
 }
 
 void perform_mutation(vector<int> &c){
-    for(int i = 0; i < c.size()-2; i = i + 2){
+    for(unsigned int i = 0; i < c.size()-2; i = i + 2){
         int r = rand() % 300 + 1;//random integer between 1 and 300.
         if(r == 150){ //0.03 means that among 300 chromosomes, 1 will be mutated.
             int mut_opt = rand() % 3; //random int between 0 and 2.
@@ -274,38 +278,4 @@ void Red_Queen(vector<vector<double> > A, vector<vector<double> > B, int MAX_ITE
     cout<<GEN_COUNT<<" GENERATIONS NEEDED"<<endl; //print the total number of parents killed. 
 
 
-}
-
-
-int main(){
-    srand(time(NULL)); //seed rand
-    ifstream in_f("A_0_MFCC.txt"); //sample MFCC files
-    ifstream in_fi("A_00_MFCC.txt");
-    double temp;
-    vector<double> A_row;
-    vector<vector<double> > A; 
-    int max_gen; 
-    cout<<"Enter value max number of generations"<<endl; 
-    cin>>max_gen; 
-    //Fill in signal A. 
-    while(in_f >> temp){
-        A_row.push_back(temp);
-        if(A_row.size() == 26){
-            A.push_back(A_row);
-            A_row.clear();
-        }
-    }
-
-    vector<double> B_row;
-    vector<vector<double > > B;
-    //Fill in signal B
-    while(in_fi >> temp){
-        B_row.push_back(temp);
-        if(B_row.size() == 26){
-            B.push_back(B_row);
-            B_row.clear();
-        }
-    }
-    //Begin Algorithm. 
-    Red_Queen(A, B, max_gen);
 }
